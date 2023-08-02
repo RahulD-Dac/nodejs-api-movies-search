@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Search and Playlist Management App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+         
+  <h1>Movie Search</h1>
+  <input type="text" id="searchInput" placeholder="Enter movie title">
+  <button onclick="searchMovies()">Search</button>
+  <div id="searchResults"></div>
+
+  <script>
+    function searchMovies() {
+      const title = document.getElementById("searchInput").value;
+      fetch(`/search?title=${title}`)
+        .then(response => response.json())
+        .then(data => displayResults(data))
+        .catch(error => console.error(error));
+    }
+
+    function displayResults(data) {
+      const searchResultsDiv = document.getElementById("searchResults");
+      searchResultsDiv.innerHTML = ""; // Clear previous search results
+
+     if (data.Response === "True") {
+      data.Search.forEach(movie => {
+        const movieElement = document.createElement("div");
+
+        const titleElement = document.createElement("h2");
+        titleElement.textContent = movie.Title;
+        movieElement.appendChild(titleElement);
+
+        const yearElement = document.createElement("p");
+        yearElement.textContent = `Year: ${movie.Year}`;
+        movieElement.appendChild(yearElement);
+
+    const posterElement = document.createElement("img");
+        console.log("Image URL:", movie.poster); // Log the image URL to check the actual URL being used
+        posterElement.src = movie.poster; // Assuming the key is 'poster'
+        posterElement.alt = `${movie.Title} Poster`;
+        movieElement.appendChild(posterElement);
+
+const plotElement = document.createElement("p");
+        plotElement.textContent = `Plot: ${movie.Plot}`;
+        movieElement.appendChild(plotElement);
+
+        
+        searchResultsDiv.appendChild(movieElement);
+        });  
+      } else {
+        const errorMessage = document.createElement("p");
+        errorMessage.textContent = "No movies found.";
+        searchResultsDiv.appendChild(errorMessage);
+      }
+    }
+
+
+    
+  </script>
+</body>
+</html>
